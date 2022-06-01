@@ -1,49 +1,56 @@
 package br.edu.ifpb.padroes.visitor;
 
-public class VisitanteHTML implements FormatoVisitante {
+import br.edu.ifpb.padroes.visitor.elementos.*;
 
-    private StringBuilder sb = new StringBuilder();
+import java.util.List;
 
-    public void visitarTitulo(String t){
-        sb.append("<h1>").append(t).append("</h1>");
+public class VisitanteHTML implements Visitor {
+
+    public String visitar(TituloElemento t){
+        return "<h1>" + t.getTitulo() + "</h1>";
     }
 
-    public void visitarSubtitulo(String t){
-        sb.append("<h2>").append(t).append("</h2>");
+    public String visitar(SubTituloElemento t){
+        return "<h2>" + t.getSubtitulo() + "</h2>";
     }
 
-    public void visitarParagrafo(String p){
-        sb.append("<p>").append(p).append("</p>");
+    public String visitar(ParagrafoElemento p){
+        return "<p>" + p.getParagrafo() + "</p>";
     }
 
-    public void visitarTabela(){
-        sb.append("<table>");
+    public String visitar(TabelaElemento t){
+        return t.isEmpty() ? "<table>" : "</table>";
     }
 
-    public void visitarTabelaCabecalho(String... ct){
-        sb.append("<tr>");
-        for(String s : ct)
+    public String visitar(TabelaElemento tabelaElemento, String... cabecalhos){
+        StringBuilder sb = new StringBuilder("<tr>");
+        for(String s : cabecalhos)
             sb.append("<th>").append(s).append("</th>");
         sb.append("</tr>");
+        return sb.toString();
     }
 
-    public void visitarTabelaLinha(Object... obs) {
-        sb.append("<tr>");
-        for (Object o : obs) {
-            sb.append("<td>").append(o.toString()).append("</td>");
+    public String visitar(TabelaElemento tabelaElemento, List<List<String>> linhas) {
+        StringBuilder sb = new StringBuilder();
+        for (List<String> linha: linhas) {
+            sb.append("<tr>");
+            for (String coluna: linha){
+                sb.append("<td>").append(coluna).append("</td>");
+            }
+            sb.append("</tr>");
         }
-        sb.append("</tr>");
+        return sb.toString();
     }
 
-    public void visitarTabelaFim(){
-        sb.append("</table>");
+    public String visitar(ImagemElemento imagemElemento){
+        return "<img src='" + imagemElemento.getPath() + "' />";
     }
 
-    public void visitarImagem(String path){
-        sb.append("<img src='").append(path).append("'>");
-    }
-
-    public Object getResultado(){
+    public String getResultado(ElementoRelatorio... elementos){
+        StringBuilder sb = new StringBuilder();
+        for (ElementoRelatorio elemento : elementos) {
+            sb.append(elemento.accept(this));
+        }
         return sb.toString();
     }
 }

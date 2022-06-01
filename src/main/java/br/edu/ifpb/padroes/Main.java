@@ -2,7 +2,7 @@ package br.edu.ifpb.padroes;
 
 import br.edu.ifpb.padroes.domain.Cliente;
 import br.edu.ifpb.padroes.domain.Item;
-import br.edu.ifpb.padroes.visitor.FormatoVisitante;
+import br.edu.ifpb.padroes.visitor.Visitor;
 import br.edu.ifpb.padroes.visitor.VisitanteHTML;
 
 import java.math.BigDecimal;
@@ -31,9 +31,9 @@ public class Main {
         comprasCliente.setCliente(cliente);
         comprasCliente.setItems(itens);
 
-        FormatoVisitante fv = new VisitanteHTML();
+        Visitor fv = new VisitanteHTML();
 
-        String resultado = (String) comprasCliente.gerarRelatorio(fv);
+        String resultado = comprasCliente.gerarRelatorio(fv);
         System.out.println(resultado);
 
     }
